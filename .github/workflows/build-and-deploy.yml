@@ -8,6 +8,18 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-    - uses: cachix/install-nix-action@v8
-    - uses: actions/checkout@v2
-    - run: nix-build $GITHUB_WORKSPACE
+    - name: install-nix
+      uses: cachix/install-nix-action@v8
+
+    - name: checkout
+      uses: actions/checkout@v2
+    
+    - name: build
+      run: nix-build $GITHUB_WORKSPACE
+
+    - name: deploy
+      uses: peaceiris/actions-gh-pages@v3
+      with:
+        github_token: ${{ secrets.GITHUB_TOKEN }}
+        publish_dir: ./result/
+        publish_branch: master
