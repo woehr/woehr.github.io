@@ -1,11 +1,15 @@
---------------------------------------------------------------------------------
 {-# LANGUAGE OverloadedStrings #-}
-import           Data.Monoid (mappend)
+
 import           Hakyll
+
+import           Data.Monoid (mappend)
 import           System.Environment (lookupEnv)
 
+postCtx :: Context String
+postCtx =
+    dateField "date" "%B %e, %Y" `mappend`
+    defaultContext
 
---------------------------------------------------------------------------------
 main :: IO ()
 main = do
   providerEnv <- lookupEnv "HAKYLL_PROVIDER_DIR"
@@ -22,7 +26,7 @@ main = do
         route   idRoute
         compile compressCssCompiler
 
-    match (fromList ["about.rst", "contact.markdown"]) $ do
+    match (fromList ["about.md", "contact.md"]) $ do
         route   $ setExtension "html"
         compile $ pandocCompiler
             >>= loadAndApplyTemplate "templates/default.html" defaultContext
@@ -64,10 +68,3 @@ main = do
                 >>= relativizeUrls
 
     match "templates/*" $ compile templateBodyCompiler
-
-
---------------------------------------------------------------------------------
-postCtx :: Context String
-postCtx =
-    dateField "date" "%B %e, %Y" `mappend`
-    defaultContext

@@ -8,5 +8,5 @@ in
   in
     pkgs.haskellPackages.shellFor {
       packages = _: [ generator ];
-      buildInputs = with pkgs.haskellPackages; [ cabal-install ];
+      buildInputs = with pkgs.haskellPackages; [ cabal-install ghcide ];
     }
