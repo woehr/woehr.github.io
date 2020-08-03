@@ -1,15 +1,53 @@
 ---
 title: Home
 ---
-
 <h2>Welcome</h2>
 
 <p>The purpose of this site is for keeping notes of things I read and learn.</p>
 <p>It may also house the occassional blog.</p>
 
-<p>I've reproduced a list of recent posts here for your reading pleasure:</p>
+<div class="columns">
+    <div class="column">
+        <div class="card">
+            <header class="card-header">
+                <p class="card-header-title">
+                    Blog
+                </p>
+            </header>
+            <div class="card-content">
+                <div class="content">
+                    $partial("templates/post-list.html")$
+                </div>
+            </div>
+        </div>
+    </div>
 
-<h2>Posts</h2>
-$partial("templates/post-list.html")$
-
-<p>…or you can find more in the <a href="/archive.html">archives</a>.</p>
+    <div class="column">
+        <div class="card">
+            <header class="card-header">
+                <p class="card-header-title">
+                    Technical Notes
+                </p>
+            </header>
+            <div class="card-content">
+                <div class="content">
+                    $partial("templates/post-list.html")$
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="column">
+        <div class="card">
+            <header class="card-header">
+                <p class="card-header-title">
+                    Book Notes
+                </p>
+            </header>
+            <div class="card-content">
+                <div class="content">
+                    $partial("templates/post-list.html")$
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

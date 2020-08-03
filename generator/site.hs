@@ -2,7 +2,7 @@
 
 import           Hakyll
 
-import           Data.Monoid (mappend)
+import           Data.Monoid        (mappend)
 import           System.Environment (lookupEnv)
 
 postCtx :: Context String
@@ -14,7 +14,7 @@ main :: IO ()
 main = do
   providerEnv <- lookupEnv "HAKYLL_PROVIDER_DIR"
   let provider = case providerEnv of
-                   Just p -> p
+                   Just p  -> p
                    Nothing -> "./content"
 
   hakyllWith (defaultConfiguration { providerDirectory = provider }) $ do
