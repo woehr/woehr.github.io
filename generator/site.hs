@@ -2,12 +2,12 @@
 
 import           Hakyll
 
-import           Data.Monoid        (mappend)
+--import           Data.Monoid        (mappend)
 import           System.Environment (lookupEnv)
 
-postCtx :: Context String
-postCtx =
-    dateField "date" "%B %e, %Y" `mappend`
+defaultContextWithDate :: Context String
+defaultContextWithDate =
+    dateField "date" "%B %e, %Y" <>
     defaultContext
 
 main :: IO ()
@@ -32,20 +32,20 @@ main = do
             >>= loadAndApplyTemplate "templates/default.html" defaultContext
             >>= relativizeUrls
 
-    match "posts/*" $ do
+    match "posts/**" $ do
         route $ setExtension "html"
         compile $ pandocCompiler
-            >>= loadAndApplyTemplate "templates/post.html"    postCtx
-            >>= loadAndApplyTemplate "templates/default.html" postCtx
+            >>= loadAndApplyTemplate "templates/post.html"    defaultContextWithDate
+            >>= loadAndApplyTemplate "templates/default.html" defaultContextWithDate
             >>= relativizeUrls
 
     create ["archive.html"] $ do
         route idRoute
         compile $ do
-            posts <- recentFirst =<< loadAll "posts/*"
+            posts <- loadAll (fromRegex "posts/(blog|books|technical)/*") >>= recentFirst
             let archiveCtx =
-                    listField "posts" postCtx (return posts) `mappend`
-                    constField "title" "Archives"            `mappend`
+                    listField "posts" defaultContextWithDate (return posts) <>
+                    constField "title" "Archives" <>
                     defaultContext
 
             makeItem ""
@@ -57,9 +57,27 @@ main = do
     match "index.html" $ do
         route idRoute
         compile $ do
-            posts <- recentFirst =<< loadAll "posts/*"
+            let loadAndCompilePostList :: Pattern -> Bool -> Compiler (Maybe (Item String))
+                loadAndCompilePostList dirPattern hasDates = do
+                    posts <- loadAll dirPattern >>= \p -> if hasDates then recentFirst p else return p
+                    let ctx = if hasDates then defaultContextWithDate else defaultContext
+                    let postListCtx = listField "posts" ctx (return posts) <> ctx
+                    if length posts > 0
+                        then makeItem "" >>= loadAndApplyTemplate "templates/post-list.html" postListCtx >>= return . Just
+                        else return Nothing
+
+            postsBlog <- loadAndCompilePostList "posts/blog/*" True
+            postsTech <- loadAndCompilePostList "posts/technical/*" True
+            postsBook <- loadAndCompilePostList "posts/books/*" True
+            postsInProgress <- loadAndCompilePostList "posts/inprogress/*" False
+
+
+
             let indexCtx =
-                    listField "posts" postCtx (return posts) `mappend`
+                    maybe mempty (constField "postsBlog" . itemBody) postsBlog <>
+                    maybe mempty (constField "postsTech" . itemBody) postsTech <>
+                    maybe mempty (constField "postsBook" . itemBody) postsBook <>
+                    maybe mempty (constField "postsInProgress" . itemBody) postsInProgress <>
                     defaultContext
 
             getResourceBody

@@ -5,8 +5,12 @@ title: Home
 
 <p>The purpose of this site is for keeping notes of things I read and learn.</p>
 <p>It may also house the occassional blog.</p>
+$if(postsInProgress)$
+<p>I'm currently working on the following:<br />$postsInProgress$</p>
+$endif$
 
 <div class="columns">
+    $if(postsBlog)$
     <div class="column">
         <div class="card">
             <header class="card-header">
@@ -16,12 +20,13 @@ title: Home
             </header>
             <div class="card-content">
                 <div class="content">
-                    $partial("templates/post-list.html")$
+                    $postsBlog$
                 </div>
             </div>
         </div>
     </div>
-
+    $endif$
+    $if(postsTech)$
     <div class="column">
         <div class="card">
             <header class="card-header">
@@ -31,11 +36,13 @@ title: Home
             </header>
             <div class="card-content">
                 <div class="content">
-                    $partial("templates/post-list.html")$
+                    $postsTech$
                 </div>
             </div>
         </div>
     </div>
+    $endif$
+    $if(postsBook)$
     <div class="column">
         <div class="card">
             <header class="card-header">
@@ -45,9 +52,10 @@ title: Home
             </header>
             <div class="card-content">
                 <div class="content">
-                    $partial("templates/post-list.html")$
+                    $postsBook$
                 </div>
             </div>
         </div>
     </div>
+    $endif$
 </div>
